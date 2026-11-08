@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="CABUSAO_FINAL" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=LAPTOP-LVHNFM78;Initial Catalog=CABUSAO_FINAL;Integrated Security=True;Trust Server Certificate=True" SettingsObjectName="CLINIC_PATIENT_APPOINTMENT.Properties.Settings" SettingsPropertyName="CABUSAO_FINALConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.APPOINTMENTS" Member="APPOINTMENTs">
+    <Type Name="APPOINTMENT">
+      <Column Name="appointmentId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="patientId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="doctorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="appointmentDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="appointmentStatus" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Association Name="APPOINTMENT_INVOICE" Member="INVOICEs" ThisKey="appointmentId" OtherKey="appointmentId" Type="INVOICE" />
+      <Association Name="DOCTOR_APPOINTMENT" Member="DOCTOR" ThisKey="doctorId" OtherKey="doctorId" Type="DOCTOR" IsForeignKey="true" />
+      <Association Name="PATIENT_APPOINTMENT" Member="PATIENT" ThisKey="patientId" OtherKey="patientId" Type="PATIENT" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DOCTORS" Member="DOCTORs">
+    <Type Name="DOCTOR">
+      <Column Name="doctorId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="licenseNo" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="fullName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="specialization" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="DOCTOR_APPOINTMENT" Member="APPOINTMENTs" ThisKey="doctorId" OtherKey="doctorId" Type="APPOINTMENT" />
+    </Type>
+  </Table>
+  <Table Name="dbo.INVOICE_LINES" Member="INVOICE_LINEs">
+    <Type Name="INVOICE_LINE">
+      <Column Name="invoiceLineId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="invoiceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="serviceId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="unitFee" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="lineAmount" Type="System.Decimal" DbType="Decimal(21,2)" IsDbGenerated="true" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="INVOICE_INVOICE_LINE" Member="INVOICE" ThisKey="invoiceId" OtherKey="invoiceId" Type="INVOICE" IsForeignKey="true" />
+      <Association Name="SERVICE_INVOICE_LINE" Member="SERVICE" ThisKey="serviceId" OtherKey="serviceId" Type="SERVICE" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.INVOICES" Member="INVOICEs">
+    <Type Name="INVOICE">
+      <Column Name="invoiceId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="appointmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="invoiceDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="totalAmount" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="paymentStatus" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="INVOICE_INVOICE_LINE" Member="INVOICE_LINEs" ThisKey="invoiceId" OtherKey="invoiceId" Type="INVOICE_LINE" />
+      <Association Name="APPOINTMENT_INVOICE" Member="APPOINTMENT" ThisKey="appointmentId" OtherKey="appointmentId" Type="APPOINTMENT" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PATIENTS" Member="PATIENTs">
+    <Type Name="PATIENT">
+      <Column Name="patientId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="patientNo" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="fullName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="birthDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="sex" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="contactNumber" Type="System.String" DbType="VarChar(11) NOT NULL" CanBeNull="false" />
+      <Column Name="patientStatus" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Association Name="PATIENT_APPOINTMENT" Member="APPOINTMENTs" ThisKey="patientId" OtherKey="patientId" Type="APPOINTMENT" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SERVICES" Member="SERVICEs">
+    <Type Name="SERVICE">
+      <Column Name="serviceId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="serviceCode" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="serviceName" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="standardFee" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Association Name="SERVICE_INVOICE_LINE" Member="INVOICE_LINEs" ThisKey="serviceId" OtherKey="serviceId" Type="INVOICE_LINE" />
+    </Type>
+  </Table>
+  <Function Name="dbo.usp_Appointment_Schedule" Method="usp_Appointment_Schedule">
+    <Parameter Name="PatientId" Parameter="patientId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="DoctorId" Parameter="doctorId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="AppointmentDateTime" Parameter="appointmentDateTime" Type="System.DateTime" DbType="DateTime" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.usp_AppointmentReport_Get" Method="usp_AppointmentReport_Get">
+    <ElementType Name="usp_AppointmentReport_GetResult">
+      <Column Name="appointmentId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="patientNo" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PatientName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="DoctorName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="specialization" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="appointmentDateTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="appointmentStatus" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="invoiceId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="invoiceDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="totalAmount" Type="System.Decimal" DbType="Decimal(10,2)" CanBeNull="true" />
+      <Column Name="paymentStatus" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_Doctor_CRUD" Method="usp_Doctor_CRUD">
+    <Parameter Name="Action" Parameter="action" Type="System.String" DbType="VarChar(10)" />
+    <Parameter Name="DoctorId" Parameter="doctorId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="LicenseNo" Parameter="licenseNo" Type="System.Int32" DbType="Int" />
+    <Parameter Name="FullName" Parameter="fullName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="Specialization" Parameter="specialization" Type="System.String" DbType="VarChar(50)" />
+    <ElementType Name="usp_Doctor_CRUDResult">
+      <Column Name="doctorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="licenseNo" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="fullName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="specialization" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_Doctor_GetAll" Method="usp_Doctor_GetAll">
+    <ElementType Name="usp_Doctor_GetAllResult">
+      <Column Name="doctorId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="licenseNo" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="fullName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="specialization" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_Invoice_CreateWithLines" Method="usp_Invoice_CreateWithLines">
+    <Parameter Name="AppointmentId" Parameter="appointmentId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PaymentStatus" Parameter="paymentStatus" Type="System.String" DbType="VarChar(20)" />
+    <Parameter Name="ServiceId" Parameter="serviceId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Quantity" Parameter="quantity" Type="System.Int32" DbType="Int" />
+    <Parameter Name="UnitFee" Parameter="unitFee" Type="System.Decimal" DbType="Decimal(10,2)" />
+    <ElementType Name="usp_Invoice_CreateWithLinesResult">
+      <Column Name="InvoiceId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AppointmentId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PaymentStatus" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_Patient_CRUD" Method="usp_Patient_CRUD">
+    <Parameter Name="Action" Parameter="action" Type="System.String" DbType="VarChar(10)" />
+    <Parameter Name="PatientId" Parameter="patientId" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PatientNo" Parameter="patientNo" Type="System.Int32" DbType="Int" />
+    <Parameter Name="FullName" Parameter="fullName" Type="System.String" DbType="VarChar(50)" />
+    <Parameter Name="BirthDate" Parameter="birthDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="Sex" Parameter="sex" Type="System.String" DbType="VarChar(10)" />
+    <Parameter Name="ContactNumber" Parameter="contactNumber" Type="System.String" DbType="VarChar(11)" />
+    <Parameter Name="PatientStatus" Parameter="patientStatus" Type="System.String" DbType="VarChar(10)" />
+    <ElementType Name="usp_Patient_CRUDResult">
+      <Column Name="patientId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="patientNo" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="fullName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="birthDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="sex" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="contactNumber" Type="System.String" DbType="VarChar(11) NOT NULL" CanBeNull="false" />
+      <Column Name="patientStatus" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.usp_Patient_Search" Method="usp_Patient_Search">
+    <Parameter Name="Keyword" Parameter="keyword" Type="System.String" DbType="VarChar(100)" />
+    <ElementType Name="usp_Patient_SearchResult">
+      <Column Name="patientId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="patientNo" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="fullName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="birthDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="sex" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="contactNumber" Type="System.String" DbType="VarChar(11) NOT NULL" CanBeNull="false" />
+      <Column Name="patientStatus" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+</Database>
